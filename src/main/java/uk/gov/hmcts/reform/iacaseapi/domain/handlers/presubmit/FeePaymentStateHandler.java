@@ -66,8 +66,15 @@ public class FeePaymentStateHandler implements PreSubmitCallbackStateHandler<Asy
         final String paymentStatus = asylumCase
             .read(PAYMENT_STATUS, String.class).orElse("");
 
-        return (isPaymentPendingAppealType && paymentStatus.equals("Payment due"))
-            ? new PreSubmitCallbackResponse<>(asylumCase, State.PAYMENT_PENDING)
-            : new PreSubmitCallbackResponse<>(asylumCase, currentState);
+        if (isPaymentPendingAppealType && paymentStatus.equals("Payment due")) {
+
+            // invoke timed event service here
+
+            return new PreSubmitCallbackResponse<>(asylumCase, State.PAYMENT_PENDING);
+
+        } else {
+            return new PreSubmitCallbackResponse<>(asylumCase, currentState);
+
+        }
     }
 }
