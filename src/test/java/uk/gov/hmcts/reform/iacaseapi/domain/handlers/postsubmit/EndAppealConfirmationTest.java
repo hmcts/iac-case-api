@@ -1,31 +1,31 @@
 package uk.gov.hmcts.reform.iacaseapi.domain.handlers.postsubmit;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCase;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class EndAppealConfirmationTest {
+class EndAppealConfirmationTest {
 
-    @Mock
-    private Callback<AsylumCase> callback;
+    @Mock private
+    Callback<AsylumCase> callback;
 
-    private EndAppealConfirmation endAppealConfirmation = new EndAppealConfirmation();
+    EndAppealConfirmation endAppealConfirmation = new EndAppealConfirmation();
 
     @Test
-    public void should_return_confirmation() {
+    void should_return_confirmation() {
 
         when(callback.getEvent()).thenReturn(Event.END_APPEAL);
 
@@ -37,18 +37,16 @@ public class EndAppealConfirmationTest {
         assertTrue(callbackResponse.getConfirmationBody().isPresent());
 
         assertThat(
-            callbackResponse.getConfirmationHeader().get(),
-            containsString("# You have ended the appeal")
-        );
+            callbackResponse.getConfirmationHeader().get())
+            .contains("# You have ended the appeal");
 
         assertThat(
-            callbackResponse.getConfirmationBody().get(),
-            containsString("A notification has been sent to all parties.")
-        );
+            callbackResponse.getConfirmationBody().get())
+            .contains("A notification has been sent to all parties.");
     }
 
     @Test
-    public void handling_should_throw_if_cannot_actually_handle() {
+    void handling_should_throw_if_cannot_actually_handle() {
 
         assertThatThrownBy(() -> endAppealConfirmation.handle(callback))
             .hasMessage("Cannot handle callback")
@@ -56,7 +54,7 @@ public class EndAppealConfirmationTest {
     }
 
     @Test
-    public void it_can_handle_callback() {
+    void it_can_handle_callback() {
 
         for (Event event : Event.values()) {
 
@@ -76,7 +74,7 @@ public class EndAppealConfirmationTest {
     }
 
     @Test
-    public void should_not_allow_null_arguments() {
+    void should_not_allow_null_arguments() {
 
         assertThatThrownBy(() -> endAppealConfirmation.canHandle(null))
             .hasMessage("callback must not be null")

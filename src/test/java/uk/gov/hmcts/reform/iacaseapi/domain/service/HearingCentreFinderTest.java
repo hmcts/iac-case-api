@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.iacaseapi.domain.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.collect.ImmutableMap;
 import java.time.LocalDate;
@@ -9,14 +9,14 @@ import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.HearingCentre;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class HearingCentreFinderTest {
+class HearingCentreFinderTest {
 
     private final HearingCentre defaultHearingCentre = HearingCentre.TAYLOR_HOUSE;
 
@@ -97,7 +97,7 @@ public class HearingCentreFinderTest {
         );
 
     @Test
-    public void should_find_bradford_hearing_centre_for_bradford_postcodes() {
+    void should_find_bradford_hearing_centre_for_bradford_postcodes() {
 
         Map<String, HearingCentre> exampleInputOutputs =
             ImmutableMap
@@ -128,7 +128,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_find_manchester_hearing_centre_for_manchester_postcodes() {
+    void should_find_manchester_hearing_centre_for_manchester_postcodes() {
 
         Map<String, HearingCentre> exampleInputOutputs =
             ImmutableMap
@@ -164,7 +164,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_find_newport_hearing_centre_for_newport_postcodes() {
+    void should_find_newport_hearing_centre_for_newport_postcodes() {
 
         Map<String, HearingCentre> exampleInputOutputs =
             ImmutableMap
@@ -200,7 +200,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_find_taylor_house_hearing_centre_for_taylor_house_postcodes() {
+    void should_find_taylor_house_hearing_centre_for_taylor_house_postcodes() {
 
         Map<String, HearingCentre> exampleInputOutputs =
             ImmutableMap
@@ -247,7 +247,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_find_north_shields_hearing_centre_for_north_shields_postcodes() {
+    void should_find_north_shields_hearing_centre_for_north_shields_postcodes() {
 
         Map<String, HearingCentre> exampleInputOutputs =
             ImmutableMap
@@ -274,7 +274,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_find_birmingham_hearing_centre_for_birmingham_postcodes() {
+    void should_find_birmingham_hearing_centre_for_birmingham_postcodes() {
 
         Map<String, HearingCentre> exampleInputOutputs =
             ImmutableMap
@@ -316,7 +316,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_find_hatton_cross_hearing_centre_for_hatton_cross_postcodes() {
+    void should_find_hatton_cross_hearing_centre_for_hatton_cross_postcodes() {
 
         Map<String, HearingCentre> exampleInputOutputs =
             ImmutableMap
@@ -348,7 +348,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_find_glasgow_hearing_centre_for_glasgow_postcodes() {
+    void should_find_glasgow_hearing_centre_for_glasgow_postcodes() {
 
         Map<String, HearingCentre> exampleInputOutputs =
             ImmutableMap
@@ -385,7 +385,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_use_default_hearing_centre_if_not_in_any_catchment() {
+    void should_use_default_hearing_centre_if_not_in_any_catchment() {
 
         Map<String, HearingCentre> exampleInputOutputs =
             ImmutableMap
@@ -410,7 +410,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_use_default_hearing_centre_if_hearing_centre_not_active() {
+    void should_use_default_hearing_centre_if_hearing_centre_not_active() {
 
         Map<HearingCentre, String> hearingCentreActivationDates =
             ImmutableMap
@@ -455,7 +455,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_return_true_for_past_and_present_activation_dates() {
+    void should_return_true_for_past_and_present_activation_dates() {
 
         Map<LocalDate, Boolean> exampleInputOutputs =
             ImmutableMap
@@ -479,7 +479,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_return_false_for_future_activation_dates() {
+    void should_return_false_for_future_activation_dates() {
 
         Map<LocalDate, Boolean> exampleInputOutputs =
             ImmutableMap
@@ -502,7 +502,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_return_true_for_hearing_centres_with_past_activation_dates() {
+    void should_return_true_for_hearing_centres_with_past_activation_dates() {
 
         final Map<HearingCentre, String> hearingCentreActivationDates =
             ImmutableMap
@@ -542,7 +542,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_return_false_for_hearing_centres_with_future_activation_dates() {
+    void should_return_false_for_hearing_centres_with_future_activation_dates() {
 
         final Map<HearingCentre, String> hearingCentreActivationDates =
             ImmutableMap
@@ -582,7 +582,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_throw_for_invalid_activation_dates() {
+    void should_throw_for_invalid_activation_dates() {
 
         Map<Integer, String> exampleInputOutputs =
             ImmutableMap
@@ -604,7 +604,7 @@ public class HearingCentreFinderTest {
     }
 
     @Test
-    public void should_return_default_hearing_centre() {
+    void should_return_default_hearing_centre() {
 
         assertEquals(defaultHearingCentre, hearingCentreFinder.getDefaultHearingCentre());
     }

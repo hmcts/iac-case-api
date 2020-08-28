@@ -1,18 +1,18 @@
 package uk.gov.hmcts.reform.iacaseapi.domain.handlers.postsubmit;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCaseFieldDefinition.APPEAL_TYPE;
 import static uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCaseFieldDefinition.PAY_FOR_THE_APPEAL_OPTION;
 
 import java.util.Optional;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.AppealType;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCase;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.CaseDetails;
@@ -20,19 +20,19 @@ import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class AppealSavedConfirmationTest {
+class AppealSavedConfirmationTest {
 
     @Mock private Callback<AsylumCase> callback;
     @Mock private CaseDetails<AsylumCase> caseDetails;
     @Mock private AsylumCase asylumCase;
 
-    private AppealSavedConfirmation appealSavedConfirmation =
+    AppealSavedConfirmation appealSavedConfirmation =
         new AppealSavedConfirmation();
 
     @Test
-    public void should_return_confirmation() {
+    void should_return_confirmation() {
 
         long caseId = 1234;
         when(asylumCase.read(PAY_FOR_THE_APPEAL_OPTION, String.class)).thenReturn(Optional.of(""));
@@ -50,32 +50,24 @@ public class AppealSavedConfirmationTest {
         assertTrue(callbackResponse.getConfirmationBody().isPresent());
 
         assertThat(
-                callbackResponse.getConfirmationHeader().get(),
-                containsString("# Your appeal details have been saved")
-        );
+                callbackResponse.getConfirmationHeader().get())
+                .contains("# Your appeal details have been saved");
 
         assertThat(
-                callbackResponse.getConfirmationBody().get(),
-                containsString("### Do this next")
-        );
+                callbackResponse.getConfirmationBody().get())
+                .contains("### Do this next");
 
         assertThat(
-                callbackResponse.getConfirmationBody().get(),
-                containsString(
-                        "[submit your appeal]"
-                                + "(/case/IA/Asylum/" + caseId + "/trigger/submitAppeal)"
-                )
-        );
+                callbackResponse.getConfirmationBody().get())
+                .contains("[submit your appeal](/case/IA/Asylum/" + caseId + "/trigger/submitAppeal)");
 
         assertThat(
-                callbackResponse.getConfirmationBody().get(),
-                containsString("Not ready to submit yet?")
-        );
-
+                callbackResponse.getConfirmationBody().get())
+                .contains("Not ready to submit yet?");
     }
 
     @Test
-    public void should_return_confirmation_for_pay_for() {
+    void should_return_confirmation_for_pay_for() {
 
         long caseId = 1234;
         AppealType appealType = AppealType.HU;
@@ -96,33 +88,25 @@ public class AppealSavedConfirmationTest {
         assertTrue(callbackResponse.getConfirmationBody().isPresent());
 
         assertThat(
-                callbackResponse.getConfirmationHeader().get(),
-                containsString("# Your appeal details have been saved")
-        );
+                callbackResponse.getConfirmationHeader().get())
+                .contains("# Your appeal details have been saved");
 
         assertThat(
-                callbackResponse.getConfirmationBody().get(),
-                containsString("### Do this next")
-        );
+                callbackResponse.getConfirmationBody().get())
+                .contains("### Do this next");
 
         assertThat(
-                callbackResponse.getConfirmationBody().get(),
-                containsString(
-                        "[pay for and submit your appeal]"
-                                + "(/case/IA/Asylum/" + caseId + "/trigger/paymentAppeal)"
-                )
-        );
+                callbackResponse.getConfirmationBody().get())
+                .contains("[pay for and submit your appeal](/case/IA/Asylum/" + caseId + "/trigger/paymentAppeal)");
 
         assertThat(
-                callbackResponse.getConfirmationBody().get(),
-                containsString("Not ready to submit yet?")
-        );
-
+                callbackResponse.getConfirmationBody().get())
+                .contains("Not ready to submit yet?");
     }
 
 
     @Test
-    public void handling_should_throw_if_cannot_actually_handle() {
+    void handling_should_throw_if_cannot_actually_handle() {
 
         assertThatThrownBy(() -> appealSavedConfirmation.handle(callback))
             .hasMessage("Cannot handle callback")
@@ -130,7 +114,7 @@ public class AppealSavedConfirmationTest {
     }
 
     @Test
-    public void it_can_handle_callback() {
+    void it_can_handle_callback() {
 
         for (Event event : Event.values()) {
 
@@ -150,7 +134,7 @@ public class AppealSavedConfirmationTest {
     }
 
     @Test
-    public void should_not_allow_null_arguments() {
+    void should_not_allow_null_arguments() {
 
         assertThatThrownBy(() -> appealSavedConfirmation.canHandle(null))
             .hasMessage("callback must not be null")

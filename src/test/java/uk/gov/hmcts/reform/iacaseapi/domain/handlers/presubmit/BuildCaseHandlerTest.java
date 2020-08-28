@@ -1,20 +1,20 @@
 package uk.gov.hmcts.reform.iacaseapi.domain.handlers.presubmit;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCaseFieldDefinition.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCase;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.DocumentTag;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.DocumentWithDescription;
@@ -30,9 +30,9 @@ import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.iacaseapi.domain.service.DocumentReceiver;
 import uk.gov.hmcts.reform.iacaseapi.domain.service.DocumentsAppender;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class BuildCaseHandlerTest {
+class BuildCaseHandlerTest {
 
     @Mock private DocumentReceiver documentReceiver;
     @Mock private DocumentsAppender documentsAppender;
@@ -40,7 +40,7 @@ public class BuildCaseHandlerTest {
     @Mock private CaseDetails<AsylumCase> caseDetails;
     @Mock private AsylumCase asylumCase;
     @Mock private Document caseArgumentDocument;
-    private String caseArgumentDescription = "Case argument description";
+    String caseArgumentDescription = "Case argument description";
     @Mock private DocumentWithMetadata caseArgumentWithMetadata;
     @Mock private DocumentWithDescription caseArgumentEvidence1;
     @Mock private DocumentWithDescription caseArgumentEvidence2;
@@ -49,12 +49,13 @@ public class BuildCaseHandlerTest {
     @Mock private List<IdValue<DocumentWithMetadata>> existingLegalRepresentativeDocuments;
     @Mock private List<IdValue<DocumentWithMetadata>> allLegalRepresentativeDocuments;
 
-    @Captor private ArgumentCaptor<List<IdValue<DocumentWithMetadata>>> legalRepresentativeDocumentsCaptor;
+    @Captor ArgumentCaptor<List<IdValue<DocumentWithMetadata>>> legalRepresentativeDocumentsCaptor;
 
-    private BuildCaseHandler buildCaseHandler;
+    BuildCaseHandler buildCaseHandler;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
+
         buildCaseHandler =
             new BuildCaseHandler(
                 documentReceiver,
@@ -63,7 +64,7 @@ public class BuildCaseHandlerTest {
     }
 
     @Test
-    public void should_append_case_argument_to_legal_representative_documents_for_the_case() {
+    void should_append_case_argument_to_legal_representative_documents_for_the_case() {
 
         List<IdValue<DocumentWithDescription>> caseArgumentEvidence =
             Arrays.asList(
@@ -126,7 +127,7 @@ public class BuildCaseHandlerTest {
     }
 
     @Test
-    public void should_add_case_argument_to_the_case_when_no_legal_representative_documents_exist() {
+    void should_add_case_argument_to_the_case_when_no_legal_representative_documents_exist() {
 
         List<IdValue<DocumentWithDescription>> caseArgumentEvidence =
             Arrays.asList(
@@ -196,7 +197,7 @@ public class BuildCaseHandlerTest {
     }
 
     @Test
-    public void should_throw_when_case_argument_document_is_not_present() {
+    void should_throw_when_case_argument_document_is_not_present() {
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getEvent()).thenReturn(Event.BUILD_CASE);
@@ -210,7 +211,7 @@ public class BuildCaseHandlerTest {
     }
 
     @Test
-    public void handling_should_throw_if_cannot_actually_handle() {
+    void handling_should_throw_if_cannot_actually_handle() {
 
         assertThatThrownBy(() -> buildCaseHandler.handle(PreSubmitCallbackStage.ABOUT_TO_START, callback))
             .hasMessage("Cannot handle callback")
@@ -223,7 +224,7 @@ public class BuildCaseHandlerTest {
     }
 
     @Test
-    public void it_can_handle_callback() {
+    void it_can_handle_callback() {
 
         for (Event event : Event.values()) {
 
@@ -247,7 +248,7 @@ public class BuildCaseHandlerTest {
     }
 
     @Test
-    public void should_not_allow_null_arguments() {
+    void should_not_allow_null_arguments() {
 
         assertThatThrownBy(() -> buildCaseHandler.canHandle(null, callback))
             .hasMessage("callbackStage must not be null")

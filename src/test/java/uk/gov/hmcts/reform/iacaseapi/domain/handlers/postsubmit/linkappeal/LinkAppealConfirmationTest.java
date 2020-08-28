@@ -1,75 +1,61 @@
 package uk.gov.hmcts.reform.iacaseapi.domain.handlers.postsubmit.linkappeal;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import lombok.Value;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCase;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
-import uk.gov.hmcts.reform.iacaseapi.domain.handlers.postsubmit.linkappeal.LinkAppealConfirmation;
 
-@RunWith(JUnitParamsRunner.class)
-public class LinkAppealConfirmationTest {
+@ExtendWith(MockitoExtension.class)
+class LinkAppealConfirmationTest {
 
-    @Rule
-    public MockitoRule rule = MockitoJUnit.rule().strictness(Strictness.STRICT_STUBS);
-
-    @Mock
+    @Mock private
     Callback<AsylumCase> callback;
 
     LinkAppealConfirmation linkAppealConfirmation = new LinkAppealConfirmation();
 
-    @Test
-    @Parameters(method = "generateCanHandleScenarios")
-    public void canHandle(CanHandleScenario scenario) {
-        when(callback.getEvent()).thenReturn(scenario.event);
+    @ParameterizedTest
+    @MethodSource("generateCanHandleScenarios")
+    void canHandle(Event event, boolean canHandleExpectedResult) {
+        when(callback.getEvent()).thenReturn(event);
 
         boolean result = linkAppealConfirmation.canHandle(callback);
 
-        Assertions.assertThat(result).isEqualTo(scenario.canHandleExpectedResult);
+        Assertions.assertThat(result).isEqualTo(canHandleExpectedResult);
     }
 
-    private List<CanHandleScenario> generateCanHandleScenarios() {
-        return CanHandleScenario.builder();
-    }
+    private static Stream<Arguments> generateCanHandleScenarios() {
 
-    @Value
-    private static class CanHandleScenario {
-        Event event;
-        boolean canHandleExpectedResult;
+        List<Arguments> scenarios = new ArrayList<>();
 
-        public static List<CanHandleScenario> builder() {
-            List<CanHandleScenario> scenarios = new ArrayList<>();
-            for (Event e : Event.values()) {
-                if (Event.LINK_APPEAL.equals(e)) {
-                    scenarios.add(new CanHandleScenario(e, true));
-                } else {
-                    scenarios.add(new CanHandleScenario(e, false));
-                }
+        for (Event e : Event.values()) {
+            if (Event.LINK_APPEAL.equals(e)) {
+                scenarios.add(Arguments.of(e, true));
+            } else {
+                scenarios.add(Arguments.of(e, false));
             }
-            return scenarios;
         }
+
+        return scenarios.stream();
     }
 
     @Test
-    public void handle() {
+    void handle() {
         when(callback.getEvent()).thenReturn(Event.LINK_APPEAL);
 
         PostSubmitCallbackResponse actualResponse = linkAppealConfirmation.handle(callback);
@@ -77,28 +63,24 @@ public class LinkAppealConfirmationTest {
         assertTrue(actualResponse.getConfirmationHeader().isPresent());
         assertTrue(actualResponse.getConfirmationBody().isPresent());
 
-        Assert.assertThat(
-            actualResponse.getConfirmationHeader().get(),
-            containsString("# You have linked this appeal")
-        );
+        assertThat(
+            actualResponse.getConfirmationHeader().get())
+            .contains("# You have linked this appeal");
 
-        Assert.assertThat(
-            actualResponse.getConfirmationBody().get(),
-            containsString("#### What happens next\r\n\r\n")
-        );
+        assertThat(
+            actualResponse.getConfirmationBody().get())
+            .contains("#### What happens next\r\n\r\n");
 
-        Assert.assertThat(
-            actualResponse.getConfirmationBody().get(),
-            containsString(
+        assertThat(
+            actualResponse.getConfirmationBody().get())
+            .contains(
                 "The appeal will now be considered as part of a set of linked appeals. "
-                    + "You must update the linked appeal spreadsheet to reflect this change."
-            )
-        );
+                    + "You must update the linked appeal spreadsheet to reflect this change.");
 
     }
 
     @Test
-    public void should_throw_exception() {
+    void should_throw_exception() {
         assertThatThrownBy(() -> linkAppealConfirmation.canHandle(null))
             .hasMessage("callback must not be null")
             .isExactlyInstanceOf(NullPointerException.class);

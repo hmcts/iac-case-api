@@ -1,17 +1,17 @@
 package uk.gov.hmcts.reform.iacaseapi.domain.handlers.postsubmit;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCaseFieldDefinition.REVIEW_TIME_EXTENSION_DECISION;
 
 import java.util.Optional;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCase;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.TimeExtensionDecision;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.CaseDetails;
@@ -19,19 +19,19 @@ import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PostSubmitCallbackResponse;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class ReviewTimeExtensionConfirmationTest {
+class ReviewTimeExtensionConfirmationTest {
 
     @Mock private Callback<AsylumCase> callback;
     @Mock private CaseDetails<AsylumCase> caseDetails;
     @Mock private AsylumCase asylumCase;
 
-    private ReviewTimeExtensionConfirmation reviewTimeExtensionConfirmation =
+    ReviewTimeExtensionConfirmation reviewTimeExtensionConfirmation =
         new ReviewTimeExtensionConfirmation();
 
     @Test
-    public void should_return_confirmation_for_granted() {
+    void should_return_confirmation_for_granted() {
 
         when(callback.getEvent()).thenReturn(Event.REVIEW_TIME_EXTENSION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
@@ -46,22 +46,21 @@ public class ReviewTimeExtensionConfirmationTest {
         assertTrue(callbackResponse.getConfirmationBody().isPresent());
 
         assertThat(
-            callbackResponse.getConfirmationHeader().get(),
-            containsString("# You have granted a time extension")
-        );
+            callbackResponse.getConfirmationHeader().get())
+            .contains("# You have granted a time extension");
 
         assertThat(
-            callbackResponse.getConfirmationBody().get(),
-            containsString("#### What happens next\n\n"
+            callbackResponse.getConfirmationBody().get())
+            .contains("#### What happens next\n\n"
                            + "The appellant has been notified that their request has been "
                            + "granted"
                            + " and that they must submit their Appeal Reasons by the new due date.<br>"
                            + "You will be notified when it is ready to review.\n"
-            ));
+            );
     }
 
     @Test
-    public void should_return_confirmation_for_refused() {
+    void should_return_confirmation_for_refused() {
 
         when(callback.getEvent()).thenReturn(Event.REVIEW_TIME_EXTENSION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
@@ -76,22 +75,21 @@ public class ReviewTimeExtensionConfirmationTest {
         assertTrue(callbackResponse.getConfirmationBody().isPresent());
 
         assertThat(
-            callbackResponse.getConfirmationHeader().get(),
-            containsString("# You have refused a time extension")
-        );
+            callbackResponse.getConfirmationHeader().get())
+            .contains("# You have refused a time extension");
 
         assertThat(
-            callbackResponse.getConfirmationBody().get(),
-            containsString("#### What happens next\n\n"
+            callbackResponse.getConfirmationBody().get())
+            .contains("#### What happens next\n\n"
                            + "The appellant has been notified that their request has been "
                            + "refused"
                            + " and that they must submit their Appeal Reasons by the new due date.<br>"
                            + "You will be notified when it is ready to review.\n"
-            ));
+            );
     }
 
     @Test
-    public void should_throw_exception_if_no_decision() {
+    void should_throw_exception_if_no_decision() {
 
         when(callback.getEvent()).thenReturn(Event.REVIEW_TIME_EXTENSION);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
@@ -104,7 +102,7 @@ public class ReviewTimeExtensionConfirmationTest {
     }
 
     @Test
-    public void handling_should_throw_if_cannot_actually_handle() {
+    void handling_should_throw_if_cannot_actually_handle() {
 
         assertThatThrownBy(() -> reviewTimeExtensionConfirmation.handle(callback))
             .hasMessage("Cannot handle callback")
@@ -112,7 +110,7 @@ public class ReviewTimeExtensionConfirmationTest {
     }
 
     @Test
-    public void it_can_handle_callback() {
+    void it_can_handle_callback() {
 
         for (Event event : Event.values()) {
 
@@ -132,7 +130,7 @@ public class ReviewTimeExtensionConfirmationTest {
     }
 
     @Test
-    public void should_not_allow_null_arguments() {
+    void should_not_allow_null_arguments() {
 
         assertThatThrownBy(() -> reviewTimeExtensionConfirmation.canHandle(null))
             .hasMessage("callback must not be null")

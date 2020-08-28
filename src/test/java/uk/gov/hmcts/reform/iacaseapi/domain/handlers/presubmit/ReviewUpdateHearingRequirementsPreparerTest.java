@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.iacaseapi.domain.handlers.presubmit;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 import static uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCaseFieldDefinition.*;
 import static uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage.ABOUT_TO_START;
@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCase;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.InterpreterLanguage;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.WitnessDetails;
@@ -28,10 +28,8 @@ import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PreSubmitCallb
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.field.IdValue;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.field.YesOrNo;
 
-
-
-@RunWith(MockitoJUnitRunner.class)
-public class ReviewUpdateHearingRequirementsPreparerTest {
+@ExtendWith(MockitoExtension.class)
+class ReviewUpdateHearingRequirementsPreparerTest {
 
     @Mock private Callback<AsylumCase> callback;
     @Mock private CaseDetails<AsylumCase> caseDetails;
@@ -39,21 +37,21 @@ public class ReviewUpdateHearingRequirementsPreparerTest {
     @Mock private List<IdValue<WitnessDetails>> witnessDetails;
     @Mock private List<IdValue<InterpreterLanguage>> interpreterLanguage;
 
-    private ReviewUpdateHearingRequirementsPreparer reviewUpdateHearingRequirementsPreparer;
+    ReviewUpdateHearingRequirementsPreparer reviewUpdateHearingRequirementsPreparer;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
+
         reviewUpdateHearingRequirementsPreparer =
             new ReviewUpdateHearingRequirementsPreparer();
+    }
+
+    @Test
+    void should_review_updated_hearing_requirements() {
 
         when(callback.getEvent()).thenReturn(Event.UPDATE_HEARING_ADJUSTMENTS);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(asylumCase);
-    }
-
-    @Test
-    public void should_review_updated_hearing_requirements() {
-
         when(asylumCase.read(UPDATE_HEARING_REQUIREMENTS_EXISTS, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
 
         witnessDetails = Arrays.asList(
@@ -86,8 +84,11 @@ public class ReviewUpdateHearingRequirementsPreparerTest {
     }
 
     @Test
-    public void should_error_when_updated_hearing_requirements_is_not_available() {
+    void should_error_when_updated_hearing_requirements_is_not_available() {
 
+        when(callback.getEvent()).thenReturn(Event.UPDATE_HEARING_ADJUSTMENTS);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(asylumCase);
         when(asylumCase.read(UPDATE_HEARING_REQUIREMENTS_EXISTS, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
 
         PreSubmitCallbackResponse<AsylumCase> callbackResponse =
@@ -112,8 +113,11 @@ public class ReviewUpdateHearingRequirementsPreparerTest {
 
 
     @Test
-    public void should_error_when_updated_hearing_requirements_flag_is_not_available() {
+    void should_error_when_updated_hearing_requirements_flag_is_not_available() {
 
+        when(callback.getEvent()).thenReturn(Event.UPDATE_HEARING_ADJUSTMENTS);
+        when(callback.getCaseDetails()).thenReturn(caseDetails);
+        when(caseDetails.getCaseData()).thenReturn(asylumCase);
         when(asylumCase.read(UPDATE_HEARING_REQUIREMENTS_EXISTS, YesOrNo.class)).thenReturn(Optional.empty());
 
         PreSubmitCallbackResponse<AsylumCase> callbackResponse =
@@ -138,7 +142,7 @@ public class ReviewUpdateHearingRequirementsPreparerTest {
 
 
     @Test
-    public void handling_should_throw_if_cannot_actually_handle() {
+    void handling_should_throw_if_cannot_actually_handle() {
 
         assertThatThrownBy(() -> reviewUpdateHearingRequirementsPreparer.handle(ABOUT_TO_SUBMIT, callback))
             .hasMessage("Cannot handle callback")
@@ -151,7 +155,7 @@ public class ReviewUpdateHearingRequirementsPreparerTest {
     }
 
     @Test
-    public void should_not_allow_null_arguments() {
+    void should_not_allow_null_arguments() {
 
         assertThatThrownBy(() -> reviewUpdateHearingRequirementsPreparer.canHandle(null, callback))
             .hasMessage("callbackStage must not be null")

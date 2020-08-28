@@ -1,20 +1,20 @@
 package uk.gov.hmcts.reform.iacaseapi.infrastructure.clients;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCase;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.Callback;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class AsylumCaseNotificationApiSenderTest {
+class AsylumCaseNotificationApiSenderTest {
 
     private static final String ENDPOINT = "http://endpoint";
     private static final String ABOUT_TO_SUBMIT_PATH = "/path";
@@ -22,10 +22,10 @@ public class AsylumCaseNotificationApiSenderTest {
     @Mock private AsylumCaseCallbackApiDelegator asylumCaseCallbackApiDelegator;
     @Mock private Callback<AsylumCase> callback;
 
-    private AsylumCaseDocumentApiGenerator asylumCaseDocumentApiGenerator;
+    AsylumCaseDocumentApiGenerator asylumCaseDocumentApiGenerator;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
 
         asylumCaseDocumentApiGenerator =
             new AsylumCaseDocumentApiGenerator(
@@ -36,7 +36,7 @@ public class AsylumCaseNotificationApiSenderTest {
     }
 
     @Test
-    public void should_delegate_callback_to_downstream_api() {
+    void should_delegate_callback_to_downstream_api() {
 
         final AsylumCase notifiedAsylumCase = mock(AsylumCase.class);
 
@@ -52,7 +52,7 @@ public class AsylumCaseNotificationApiSenderTest {
     }
 
     @Test
-    public void should_not_allow_null_arguments() {
+    void should_not_allow_null_arguments() {
 
         assertThatThrownBy(() -> asylumCaseDocumentApiGenerator.generate(null))
             .hasMessage("callback must not be null")
