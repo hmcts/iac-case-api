@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.iacaseapi.domain.handlers.presubmit;
 import static java.util.Objects.requireNonNull;
 import static uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCaseFieldDefinition.HOME_OFFICE_REFERENCE_NUMBER;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +11,7 @@ import uk.gov.hmcts.reform.iacaseapi.domain.RequiredFieldMissingException;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.AsylumCase;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.Event;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.Callback;
+import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.DispatchPriority;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.iacaseapi.domain.handlers.PreSubmitCallbackHandler;
@@ -21,6 +21,7 @@ public class HomeOfficeReferenceNumberTruncator implements PreSubmitCallbackHand
 
     private static final Pattern HOME_OFFICE_REF_PATTERN = Pattern.compile("^(([0-9]{4}\\-[0-9]{4}\\-[0-9]{4}\\-[0-9]{4})|([0-9]{1,9}))$");
 
+    @Override
     public boolean canHandle(
         PreSubmitCallbackStage callbackStage,
         Callback<AsylumCase> callback
@@ -29,12 +30,10 @@ public class HomeOfficeReferenceNumberTruncator implements PreSubmitCallbackHand
         requireNonNull(callback, "callback must not be null");
 
         return callbackStage == PreSubmitCallbackStage.ABOUT_TO_SUBMIT
-               && Arrays.asList(
-                    Event.SUBMIT_APPEAL,
-                    Event.PAY_AND_SUBMIT_APPEAL)
-                   .contains(callback.getEvent());
+               && (Event.SUBMIT_APPEAL == callback.getEvent() || Event.PAY_AND_SUBMIT_APPEAL == callback.getEvent());
     }
 
+    @Override
     public PreSubmitCallbackResponse<AsylumCase> handle(
         PreSubmitCallbackStage callbackStage,
         Callback<AsylumCase> callback
@@ -72,4 +71,10 @@ public class HomeOfficeReferenceNumberTruncator implements PreSubmitCallbackHand
         }
         return new PreSubmitCallbackResponse<>(asylumCase);
     }
+
+    @Override
+    public DispatchPriority getDispatchPriority() {
+        return DispatchPriority.EARLIEST;
+    }
+
 }
