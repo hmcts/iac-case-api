@@ -29,6 +29,7 @@ public class AutomaticDirectionHandlerTest extends SpringBootIntegrationTest imp
 
     private String expectedId = "someId";
     private long caseId = 54321;
+    private String caseTypeId = "Asylum";
 
     @BeforeEach
     public void setupTimedEventServiceStub() {
@@ -53,6 +54,7 @@ public class AutomaticDirectionHandlerTest extends SpringBootIntegrationTest imp
                     someCaseDetailsWith()
                         .id(caseId)
                         .state(RESPONDENT_REVIEW)
+                        .caseTypeId(caseTypeId)
                         .caseData(
                             anAsylumCase()
                                 .with(APPELLANT_GIVEN_NAMES, "some names")

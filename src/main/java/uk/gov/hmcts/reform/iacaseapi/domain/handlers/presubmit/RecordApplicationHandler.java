@@ -213,6 +213,7 @@ public class RecordApplicationHandler implements PreSubmitCallbackHandler<Asylum
                     callback.getCaseDetails().getId(),
                     callback.getCaseDetails().getJurisdiction(),
                     callback.getCaseDetails().getState(),
+                    callback.getCaseDetails().getCaseTypeId(),
                     asylumCase,
                     callback.getCaseDetails().getCreatedDate(),
                     callback.getCaseDetails().getSecurityClassification()
