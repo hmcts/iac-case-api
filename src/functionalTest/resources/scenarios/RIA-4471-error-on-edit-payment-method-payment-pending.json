@@ -1,17 +1,17 @@
 {
-  "description": "RIA-3409 Error on payment when appeal in paid status.json",
+  "description": "RIA-4471 error on edit payment method (Payment status - Payment pending)",
   "enabled": "{$featureFlag.isfeePaymentEnabled}",
   "request": {
     "uri": "/asylum/ccdAboutToStart",
-    "credentials": "LegalRepresentativeOrgSuccess",
+    "credentials": "LegalRepresentative",
     "input": {
-      "id": 3409,
-      "eventId": "paymentAppeal",
+      "id": 4471,
+      "eventId": "editPaymentMethod",
       "state": "appealSubmitted",
       "caseData": {
         "template": "minimal-appeal-submitted.json",
         "replacements": {
-          "paymentStatus": "Paid"
+          "paymentStatus": "Payment pending"
         }
       }
     }
@@ -19,7 +19,7 @@
   "expectation": {
     "status": 200,
     "errors": [
-      "You have already paid for this appeal."
+      "You can only change the payment method for a failed PBA payment."
     ],
     "caseData": {
       "template": "minimal-appeal-submitted.json"
