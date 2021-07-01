@@ -52,7 +52,6 @@ class SendNotificationHandlerTest {
 
         Arrays.asList(
             Event.SUBMIT_APPEAL,
-            Event.PAY_AND_SUBMIT_APPEAL,
             Event.SEND_DIRECTION,
             Event.CHANGE_DIRECTION_DUE_DATE,
             Event.REQUEST_RESPONDENT_EVIDENCE,
@@ -105,7 +104,6 @@ class SendNotificationHandlerTest {
             Event.LEADERSHIP_JUDGE_FTPA_DECISION,
             Event.RESIDENT_JUDGE_FTPA_DECISION,
             Event.REQUEST_RESPONSE_AMEND,
-            Event.PAYMENT_APPEAL,
             Event.MARK_APPEAL_PAID,
             Event.MAKE_AN_APPLICATION,
             Event.REINSTATE_APPEAL,
@@ -190,7 +188,6 @@ class SendNotificationHandlerTest {
                     &&
                     Arrays.asList(
                         Event.SUBMIT_APPEAL,
-                        Event.PAY_AND_SUBMIT_APPEAL,
                         Event.SEND_DIRECTION,
                         Event.CHANGE_DIRECTION_DUE_DATE,
                         Event.REQUEST_RESPONDENT_EVIDENCE,
@@ -245,7 +242,6 @@ class SendNotificationHandlerTest {
                         Event.LEADERSHIP_JUDGE_FTPA_DECISION,
                         Event.RESIDENT_JUDGE_FTPA_DECISION,
                         Event.REQUEST_RESPONSE_AMEND,
-                        Event.PAYMENT_APPEAL,
                         Event.MARK_APPEAL_PAID,
                         Event.MAKE_AN_APPLICATION,
                         Event.REINSTATE_APPEAL,
