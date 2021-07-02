@@ -73,7 +73,7 @@ class HomeOfficeCaseValidateHandlerTest {
     void should_call_home_office_api_and_update_the_case() {
 
         when(callback.getEvent()).thenReturn(SUBMIT_APPEAL);
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
+        when(homeOfficeApi.aboutToSubmit(callback)).thenReturn(asylumCase);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getCaseDetails().getCaseData()).thenReturn(asylumCase);
         when(asylumCase.read(APPELLANT_IN_UK,YesOrNo.class)).thenReturn(Optional.empty());
@@ -97,7 +97,7 @@ class HomeOfficeCaseValidateHandlerTest {
         assertNotNull(callbackResponse);
         assertEquals(asylumCase, callbackResponse.getData());
 
-        verify(homeOfficeApi, times(1)).call(callback);
+        verify(homeOfficeApi, times(1)).aboutToSubmit(callback);
         verify(asylumCase, times(1)).write(
             IS_HOME_OFFICE_INTEGRATION_ENABLED, YesOrNo.YES);
         verify(asylumCase, times(1)).read(CONTACT_PREFERENCE);

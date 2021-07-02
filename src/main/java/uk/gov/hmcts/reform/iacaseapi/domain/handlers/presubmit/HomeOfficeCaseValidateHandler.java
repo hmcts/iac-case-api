@@ -77,7 +77,7 @@ public class HomeOfficeCaseValidateHandler implements PreSubmitCallbackHandler<A
         if (asylumCaseWithHomeOfficeData.read(AsylumCaseFieldDefinition.APPELLANT_IN_UK, YesOrNo.class).map(
             value -> value.equals(YesOrNo.YES)).orElse(true)) {
 
-            asylumCaseWithHomeOfficeData = homeOfficeApi.call(callback);
+            asylumCaseWithHomeOfficeData = homeOfficeApi.aboutToSubmit(callback);
 
             asylumCaseWithHomeOfficeData.write(AsylumCaseFieldDefinition.IS_HOME_OFFICE_INTEGRATION_ENABLED, YesOrNo.YES);
 

@@ -98,7 +98,7 @@ class HomeOfficeCaseNotificationsHandlerTest {
     void should_call_home_office_api_and_update_the_case_for_list_case(Event event) {
 
         when(callback.getEvent()).thenReturn(event);
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
+        when(homeOfficeApi.aboutToSubmit(callback)).thenReturn(asylumCase);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getCaseDetails().getCaseData()).thenReturn(asylumCase);
         when(asylumCase.read(APPELLANT_IN_UK, YesOrNo.class)).thenReturn(Optional.empty());
@@ -112,7 +112,7 @@ class HomeOfficeCaseNotificationsHandlerTest {
         assertNotNull(callbackResponse);
         assertEquals(asylumCase, callbackResponse.getData());
 
-        verify(homeOfficeApi, times(1)).call(callback);
+        verify(homeOfficeApi, times(1)).aboutToSubmit(callback);
     }
 
     @ParameterizedTest
@@ -132,7 +132,7 @@ class HomeOfficeCaseNotificationsHandlerTest {
     void should_not_call_home_office_api_when_validation_unsuccessful(Event event) {
 
         when(callback.getEvent()).thenReturn(event);
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
+        when(homeOfficeApi.aboutToSubmit(callback)).thenReturn(asylumCase);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getCaseDetails().getCaseData()).thenReturn(asylumCase);
         when(asylumCase.read(APPELLANT_IN_UK, YesOrNo.class)).thenReturn(Optional.empty());
@@ -145,7 +145,7 @@ class HomeOfficeCaseNotificationsHandlerTest {
         assertNotNull(callbackResponse);
         assertEquals(asylumCase, callbackResponse.getData());
 
-        verify(homeOfficeApi, times(0)).call(callback);
+        verify(homeOfficeApi, times(0)).aboutToSubmit(callback);
     }
 
     @ParameterizedTest
@@ -165,7 +165,7 @@ class HomeOfficeCaseNotificationsHandlerTest {
     void should_not_call_home_office_api_for_in_progress_case(Event event) {
 
         when(callback.getEvent()).thenReturn(event);
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
+        when(homeOfficeApi.aboutToSubmit(callback)).thenReturn(asylumCase);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getCaseDetails().getCaseData()).thenReturn(asylumCase);
         when(asylumCase.read(APPELLANT_IN_UK, YesOrNo.class)).thenReturn(Optional.empty());
@@ -178,7 +178,7 @@ class HomeOfficeCaseNotificationsHandlerTest {
         assertNotNull(callbackResponse);
         assertEquals(asylumCase, callbackResponse.getData());
 
-        verify(homeOfficeApi, times(0)).call(callback);
+        verify(homeOfficeApi, times(0)).aboutToSubmit(callback);
     }
 
     @Test
@@ -187,7 +187,7 @@ class HomeOfficeCaseNotificationsHandlerTest {
         when(asylumCase.read(APPELLANT_IN_UK, YesOrNo.class))
             .thenReturn(Optional.of(YesOrNo.NO));
 
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
+        when(homeOfficeApi.aboutToSubmit(callback)).thenReturn(asylumCase);
 
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(callback.getCaseDetails().getCaseData()).thenReturn(asylumCase);
@@ -198,7 +198,7 @@ class HomeOfficeCaseNotificationsHandlerTest {
         assertNotNull(callbackResponse);
         assertEquals(asylumCase, callbackResponse.getData());
 
-        verify(homeOfficeApi, times(0)).call(callback);
+        verify(homeOfficeApi, times(0)).aboutToSubmit(callback);
     }
 
     @ParameterizedTest
@@ -209,7 +209,7 @@ class HomeOfficeCaseNotificationsHandlerTest {
     void should_call_home_office_api_and_update_the_case_for_direction_due_date(State state) {
 
         when(callback.getEvent()).thenReturn(Event.CHANGE_DIRECTION_DUE_DATE);
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
+        when(homeOfficeApi.aboutToSubmit(callback)).thenReturn(asylumCase);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(asylumCase);
         when(callback.getCaseDetails().getState()).thenReturn(state);
@@ -224,7 +224,7 @@ class HomeOfficeCaseNotificationsHandlerTest {
         assertNotNull(callbackResponse);
         assertEquals(asylumCase, callbackResponse.getData());
 
-        verify(homeOfficeApi, times(1)).call(callback);
+        verify(homeOfficeApi, times(1)).aboutToSubmit(callback);
     }
 
     @Test
