@@ -26,6 +26,9 @@ public enum AsylumCaseFieldDefinition {
     STITCHING_STATUS(
         "stitchingStatus", new TypeReference<String>(){}),
 
+    STITCHING_STATUS_UPPER_TRIBUNAL(
+        "stitchingStatusUpperTribunal", new TypeReference<String>(){}),
+
     BUNDLE_FILE_NAME_PREFIX(
         "bundleFileNamePrefix", new TypeReference<String>(){}),
 
@@ -1459,6 +1462,9 @@ public enum AsylumCaseFieldDefinition {
 
     CASE_MANAGEMENT_CATEGORY(
         "caseManagementCategory", new TypeReference<DynamicList>(){}),
+
+    UPPER_TRIBUNAL_DOCUMENTS(
+        "upperTribunalDocuments", new TypeReference<List<IdValue<DocumentWithMetadata>>>(){}),
 
     ;
 
