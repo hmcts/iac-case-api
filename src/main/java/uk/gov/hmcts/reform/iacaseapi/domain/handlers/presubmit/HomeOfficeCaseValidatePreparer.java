@@ -15,15 +15,21 @@ import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PreSubmitCallb
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.field.YesOrNo;
 import uk.gov.hmcts.reform.iacaseapi.domain.handlers.PreSubmitCallbackHandler;
+import uk.gov.hmcts.reform.iacaseapi.domain.service.HomeOfficeApi;
 
 @Component
 public class HomeOfficeCaseValidatePreparer implements PreSubmitCallbackHandler<AsylumCase> {
 
     private final boolean isHomeOfficeIntegrationEnabled;
 
+    private final HomeOfficeApi<AsylumCase> homeOfficeApi;
+
     public HomeOfficeCaseValidatePreparer(
-        @Value("${featureFlag.isHomeOfficeIntegrationEnabled}") boolean isHomeOfficeIntegrationEnabled) {
+        @Value("${featureFlag.isHomeOfficeIntegrationEnabled}") boolean isHomeOfficeIntegrationEnabled,
+        HomeOfficeApi<AsylumCase> homeOfficeApi
+    ) {
         this.isHomeOfficeIntegrationEnabled = isHomeOfficeIntegrationEnabled;
+        this.homeOfficeApi = homeOfficeApi;
     }
 
     public boolean canHandle(
@@ -53,6 +59,7 @@ public class HomeOfficeCaseValidatePreparer implements PreSubmitCallbackHandler<
 
         if (isHomeOfficeIntegrationEnabled) {
             asylumCase.write(IS_HOME_OFFICE_INTEGRATION_ENABLED, YesOrNo.YES);
+            asylumCase = homeOfficeApi.aboutToStart(callback);
         } else {
             asylumCase.write(IS_HOME_OFFICE_INTEGRATION_ENABLED, YesOrNo.NO);
         }

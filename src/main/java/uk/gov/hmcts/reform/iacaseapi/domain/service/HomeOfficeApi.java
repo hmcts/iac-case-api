@@ -5,6 +5,12 @@ import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.Callback;
 
 public interface HomeOfficeApi<T extends CaseData> {
 
-    T call(Callback<T> callback);
+    T aboutToStart(
+            Callback<T> callback
+    );
+
+    T aboutToSubmit(
+            Callback<T> callback
+    );
 
 }

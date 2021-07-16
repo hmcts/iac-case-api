@@ -134,7 +134,7 @@ public class AdvancedFinalBundlingStitchingCallbackHandler implements PreSubmitC
             if ("SUCCESS".equalsIgnoreCase(homeOfficeSearchStatus)
                 && homeOfficeNotificationsEligible == YesOrNo.YES) {
 
-                AsylumCase asylumCaseWithHomeOfficeData = homeOfficeApi.call(callback);
+                AsylumCase asylumCaseWithHomeOfficeData = homeOfficeApi.aboutToSubmit(callback);
 
                 asylumCase.write(HOME_OFFICE_HEARING_BUNDLE_READY_INSTRUCT_STATUS,
                     asylumCaseWithHomeOfficeData.read(HOME_OFFICE_HEARING_BUNDLE_READY_INSTRUCT_STATUS, String.class).orElse(""));

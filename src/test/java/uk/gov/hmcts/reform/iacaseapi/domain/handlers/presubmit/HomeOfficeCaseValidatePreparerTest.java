@@ -18,6 +18,8 @@ import static uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PreSubm
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,6 +30,7 @@ import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.Callback;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PreSubmitCallbackResponse;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.callback.PreSubmitCallbackStage;
 import uk.gov.hmcts.reform.iacaseapi.domain.entities.ccd.field.YesOrNo;
+import uk.gov.hmcts.reform.iacaseapi.domain.service.HomeOfficeApi;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -43,17 +46,24 @@ class HomeOfficeCaseValidatePreparerTest {
     @Mock
     private AsylumCase asylumCase;
 
+    @Mock
+    private HomeOfficeApi<AsylumCase> homeOfficeApi;
+
     @BeforeEach
     public void setUp() {
-        homeOfficeCaseValidatePreparer = new HomeOfficeCaseValidatePreparer(true);
+        homeOfficeCaseValidatePreparer = new HomeOfficeCaseValidatePreparer(true, homeOfficeApi);
     }
 
-    @Test
-    void handler_checks_home_office_integration_enabled_returns_yes() {
+    @ParameterizedTest
+    @EnumSource(
+            value = Event.class,
+            names = { "SUBMIT_APPEAL", "PAY_AND_SUBMIT_APPEAL", "MARK_APPEAL_PAID", "REQUEST_HOME_OFFICE_DATA" })
+    void handler_checks_home_office_integration_enabled_returns_yes(Event event) {
 
-        when(callback.getEvent()).thenReturn(SUBMIT_APPEAL);
+        when(callback.getEvent()).thenReturn(event);
         when(callback.getCaseDetails()).thenReturn(caseDetails);
         when(caseDetails.getCaseData()).thenReturn(asylumCase);
+        when(homeOfficeApi.aboutToStart(callback)).thenReturn(asylumCase);
 
         PreSubmitCallbackResponse<AsylumCase> response =
             homeOfficeCaseValidatePreparer.handle(ABOUT_TO_START, callback);
@@ -70,7 +80,7 @@ class HomeOfficeCaseValidatePreparerTest {
     @Test
     void handler_checks_home_office_integration_disabled_returns_no() {
 
-        homeOfficeCaseValidatePreparer = new HomeOfficeCaseValidatePreparer(false);
+        homeOfficeCaseValidatePreparer = new HomeOfficeCaseValidatePreparer(false, homeOfficeApi);
 
         when(callback.getEvent()).thenReturn(PAY_AND_SUBMIT_APPEAL);
         when(callback.getCaseDetails()).thenReturn(caseDetails);

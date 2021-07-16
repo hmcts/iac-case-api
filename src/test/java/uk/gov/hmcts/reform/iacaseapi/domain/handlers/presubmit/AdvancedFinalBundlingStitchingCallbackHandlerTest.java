@@ -116,7 +116,7 @@ class AdvancedFinalBundlingStitchingCallbackHandlerTest {
     void should_successfully_handle_the_callback_in_reheard_case() {
 
         when(featureToggler.getValue("home-office-notification-feature", false)).thenReturn(true);
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
+        when(homeOfficeApi.aboutToSubmit(callback)).thenReturn(asylumCase);
         when(asylumCase.read(HOME_OFFICE_HEARING_BUNDLE_READY_INSTRUCT_STATUS, String.class)).thenReturn(Optional.of("OK"));
         when(asylumCase.read(HOME_OFFICE_SEARCH_STATUS, String.class)).thenReturn(Optional.of("SUCCESS"));
         when(asylumCase.read(HOME_OFFICE_NOTIFICATIONS_ELIGIBLE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
@@ -148,7 +148,7 @@ class AdvancedFinalBundlingStitchingCallbackHandlerTest {
         verify(asylumCase, times(1)).read(REHEARD_HEARING_DOCUMENTS);
         verify(documentReceiver).receive(stitchedDocument, "", DocumentTag.HEARING_BUNDLE);
         verify(documentsAppender).append(anyList(), anyList(), eq(DocumentTag.HEARING_BUNDLE));
-        verify(homeOfficeApi, times(1)).call(callback);
+        verify(homeOfficeApi, times(1)).aboutToSubmit(callback);
         verify(notificationSender, times(1)).send(callback);
 
     }
@@ -157,7 +157,7 @@ class AdvancedFinalBundlingStitchingCallbackHandlerTest {
     void should_write_instruct_status_when_ho_notification_feature_on() {
 
         when(featureToggler.getValue("home-office-notification-feature", false)).thenReturn(true);
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
+        when(homeOfficeApi.aboutToSubmit(callback)).thenReturn(asylumCase);
         when(asylumCase.read(HOME_OFFICE_HEARING_BUNDLE_READY_INSTRUCT_STATUS, String.class)).thenReturn(Optional.of("OK"));
         when(asylumCase.read(HOME_OFFICE_SEARCH_STATUS, String.class)).thenReturn(Optional.of("SUCCESS"));
         when(asylumCase.read(HOME_OFFICE_NOTIFICATIONS_ELIGIBLE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.YES));
@@ -169,7 +169,7 @@ class AdvancedFinalBundlingStitchingCallbackHandlerTest {
         assertEquals(asylumCase, callbackResponse.getData());
 
         verify(asylumCase, times(1)).write(HOME_OFFICE_HEARING_BUNDLE_READY_INSTRUCT_STATUS, "OK");
-        verify(homeOfficeApi, times(1)).call(callback);
+        verify(homeOfficeApi, times(1)).aboutToSubmit(callback);
         verify(notificationSender, times(1)).send(callback);
     }
 
@@ -177,7 +177,7 @@ class AdvancedFinalBundlingStitchingCallbackHandlerTest {
     void should_not_call_home_office_notification_when_ho_validation_has_failed() {
 
         when(featureToggler.getValue("home-office-notification-feature", false)).thenReturn(true);
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
+        when(homeOfficeApi.aboutToSubmit(callback)).thenReturn(asylumCase);
         when(asylumCase.read(HOME_OFFICE_HEARING_BUNDLE_READY_INSTRUCT_STATUS, String.class)).thenReturn(Optional.of("OK"));
         when(asylumCase.read(HOME_OFFICE_SEARCH_STATUS, String.class)).thenReturn(Optional.of("FAIL"));
 
@@ -188,7 +188,7 @@ class AdvancedFinalBundlingStitchingCallbackHandlerTest {
         assertEquals(asylumCase, callbackResponse.getData());
 
         //verify(asylumCase, times(1)).write(HOME_OFFICE_HEARING_BUNDLE_READY_INSTRUCT_STATUS, "OK");
-        verify(homeOfficeApi, times(0)).call(callback);
+        verify(homeOfficeApi, times(0)).aboutToSubmit(callback);
         verify(notificationSender, times(1)).send(callback);
     }
 
@@ -196,7 +196,7 @@ class AdvancedFinalBundlingStitchingCallbackHandlerTest {
     void should_not_call_home_office_notification_when_ho_validation_success_but_for_in_progress_case() {
 
         when(featureToggler.getValue("home-office-notification-feature", false)).thenReturn(true);
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
+        when(homeOfficeApi.aboutToSubmit(callback)).thenReturn(asylumCase);
         when(asylumCase.read(HOME_OFFICE_HEARING_BUNDLE_READY_INSTRUCT_STATUS, String.class)).thenReturn(Optional.of("OK"));
         when(asylumCase.read(HOME_OFFICE_SEARCH_STATUS, String.class)).thenReturn(Optional.of("SUCCESS"));
         when(asylumCase.read(HOME_OFFICE_NOTIFICATIONS_ELIGIBLE, YesOrNo.class)).thenReturn(Optional.of(YesOrNo.NO));
@@ -207,7 +207,7 @@ class AdvancedFinalBundlingStitchingCallbackHandlerTest {
         assertNotNull(callbackResponse);
         assertEquals(asylumCase, callbackResponse.getData());
 
-        verify(homeOfficeApi, times(0)).call(callback);
+        verify(homeOfficeApi, times(0)).aboutToSubmit(callback);
         verify(notificationSender, times(1)).send(callback);
     }
 
@@ -241,7 +241,7 @@ class AdvancedFinalBundlingStitchingCallbackHandlerTest {
     void should_not_call_ho_api_when_ooc_appeal() {
 
         when(featureToggler.getValue("home-office-notification-feature", false)).thenReturn(true);
-        when(homeOfficeApi.call(callback)).thenReturn(asylumCase);
+        when(homeOfficeApi.aboutToSubmit(callback)).thenReturn(asylumCase);
         when(asylumCase.read(APPELLANT_IN_UK, YesOrNo.class))
             .thenReturn(Optional.of(YesOrNo.NO));
 
@@ -251,7 +251,7 @@ class AdvancedFinalBundlingStitchingCallbackHandlerTest {
         assertNotNull(callbackResponse);
         assertEquals(asylumCase, callbackResponse.getData());
 
-        verify(homeOfficeApi, times(0)).call(callback);
+        verify(homeOfficeApi, times(0)).aboutToSubmit(callback);
     }
 
     @Test
